@@ -44,19 +44,19 @@
       const resultElement = document.getElementById('result');
       resultElement.textContent = "Bezig met ophalen...";
 
-      if (!walletAddress.startsWith('bc1')) {
-        resultElement.textContent = "Ongeldig walletadres.";
-        return;
-      }
-
       try {
         const response = await fetch(`https://bitmap-backend.onrender.com/wallet/${walletAddress}`);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data = await response.json();
-        resultElement.textContent = JSON.stringify(data, null, 2);
+        const text = await response.text();
+
+        try {
+          const data = JSON.parse(text);
+          resultElement.textContent = JSON.stringify(data, null, 2);
+        } catch (jsonErr) {
+          resultElement.textContent = `JSON parse fout:\n${text}`;
+        }
+
       } catch (error) {
-        console.error("Fout bij ophalen van data:", error);
-        resultElement.textContent = `Fout bij ophalen van data:\n${error.message || error}`;
+        resultElement.textContent = `Fout bij ophalen van data:\n${error}`;
       }
     }
   </script>

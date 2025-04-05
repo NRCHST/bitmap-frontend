@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bitmap Wallet Analyzer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f6f6f6;
+    }
+    h1 {
+      font-size: 2rem;
+    }
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    button {
+      padding: 0.5rem 1rem;
+    }
+    pre {
+      background-color: #eee;
+      padding: 1rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bitmap Wallet Analyzer</h1>
+  <label for="wallet">Voer een walletadres in:</label><br/>
+  <input type="text" id="wallet" placeholder="bc1..." />
+  <button onclick="analyze()">Analyseer</button>
+
+  <pre id="result">Resultaat verschijnt hier...</pre>
+
+  <script>
+    async function analyze() {
+      const walletAddress = document.getElementById('wallet').value.trim();
+      const resultElement = document.getElementById('result');
+      resultElement.textContent = "Bezig met ophalen...";
+
+      try {
+        const response = await fetch(`https://bitmap-backend.onrender.com/wallet/${walletAddress}`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        resultElement.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        resultElement.textContent = `Fout bij ophalen van data:\n${error}`;
+      }
+    }
+  </script>
+</body>
+</html>
